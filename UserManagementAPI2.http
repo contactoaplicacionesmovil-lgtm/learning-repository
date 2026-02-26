@@ -1,0 +1,94 @@
+@UserManagementAPI2_HostAddress = http://localhost:5298
+
+
+
+###
+
+# Obtener token JWT
+# Usuario demo: admin / admin123
+# @name login
+POST {{UserManagementAPI2_HostAddress}}/api/auth/token
+Content-Type: application/json
+
+{
+	"username": "admin",
+	"password": "admin123"
+}
+
+###
+
+# Token capturado automaticamente desde la respuesta del login (REST Client)
+@token = {{login.response.body.$.access_token}}
+
+# Alternativa manual (si alguna vez falla el autoguardado):
+# @token = PEGA_AQUI_EL_ACCESS_TOKEN
+
+# Endpoint protegido: requiere Bearer token
+GET {{UserManagementAPI2_HostAddress}}/api/users
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+
+# Error 400: nombre con 1 caracter (minimo 2)
+POST {{UserManagementAPI2_HostAddress}}/api/users
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+	"firstName": "A",
+	"lastName": "Perez",
+	"email": "error400@example.com",
+	"isActive": true
+}
+
+###
+
+# Error 400: campos vacios / solo espacios
+POST {{UserManagementAPI2_HostAddress}}/api/users
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+	"firstName": "   ",
+	"lastName": "   ",
+	"email": "   ",
+	"isActive": true
+}
+
+###
+
+# Crear usuario valido (primer intento: 201)
+POST {{UserManagementAPI2_HostAddress}}/api/users
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+	"firstName": "Juan",
+	"lastName": "Lopez",
+	"email": "repetido@example.com",
+	"isActive": true
+}
+
+###
+
+# Error 409: email duplicado (ejecuta despues del request anterior)
+POST {{UserManagementAPI2_HostAddress}}/api/users
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+	"firstName": "Juana",
+	"lastName": "Lopez",
+	"email": "repetido@example.com",
+	"isActive": true
+}
+
+###
+
+# Error 404: usuario inexistente
+GET {{UserManagementAPI2_HostAddress}}/api/users/9999
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
