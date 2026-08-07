@@ -67,7 +67,7 @@ src/
 └── styles.css
 ```
 
-## Generar componentes
+## Codigos y sus usos
 
 Para crear un nuevo componente con la versión de Angular CLI instalada en el proyecto:
 
@@ -75,6 +75,24 @@ Para crear un nuevo componente con la versión de Angular CLI instalada en el pr
 npm.cmd run ng -- generate component nombre-del-componente
 ```
 
-## Estado del proyecto
+Para binding entre ts y html
 
-La aplicación se encuentra en una etapa inicial. El componente raíz carga `HeaderComponent`, que presenta el nombre y el logotipo de EasyTask.
+```powershell
+{{ <nombre_varianle_a_usar }}
+```
+
+Usa Interpolation cuando quieras mostrar texto:
+
+```powershell
+<h1>{{ titulo }}</h1>
+<p>{{ usuario.nombre }}</p>
+```
+Usa Property Binding cuando quieras controlar propiedades de elementos:
+
+```powershell
+TYPESCRIPT
+isDisabled = false;
+
+HTML
+<button [disabled]="isDisabled">
+```
