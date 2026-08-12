@@ -96,3 +96,10 @@ isDisabled = false;
 HTML
 <button [disabled]="isDisabled">
 ```
+
+En el TS class 
+
+```powershell
+// si no le agrego un value, el default es 'undifined'
+avatar = input();
+```
