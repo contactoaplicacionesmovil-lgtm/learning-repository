@@ -1,4 +1,5 @@
-import {Component, Input, input, computed} from '@angular/core';
+//import {Component, Input, input, computed} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 
 
 @Component({
@@ -16,16 +17,17 @@ export class UserComponent {
   // imagePath = computed(() => {
   //   return 'assets/users/' + this.avatar();
   // });
-
+  @Input({required: true}) id!: string;
   @Input({required: true}) avatar!: string;
   @Input({required: true}) name!: string;
+  @Output() select= new EventEmitter();
 
   get imagePath(){
     return 'assets/users/' + this.avatar;
   }
 
   onSelectUser() {
-
+    this.select.emit(this.id);
   }
 
 }
