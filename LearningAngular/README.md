@@ -42,12 +42,12 @@ Para detener el servidor, presiona `Ctrl + C` en el terminal.
 
 ## Comandos disponibles
 
-| Comando | Descripción |
-| --- | --- |
-| `npm.cmd start` | Inicia el servidor de desarrollo. |
+| Comando             | Descripción                                           |
+|---------------------|-------------------------------------------------------|
+| `npm.cmd start`     | Inicia el servidor de desarrollo.                     |
 | `npm.cmd run build` | Genera la versión de producción en `dist/essentials`. |
-| `npm.cmd run watch` | Compila en modo desarrollo y observa cambios. |
-| `npm.cmd test` | Ejecuta las pruebas unitarias con Karma y Jasmine. |
+| `npm.cmd run watch` | Compila en modo desarrollo y observa cambios.         |
+| `npm.cmd test`      | Ejecuta las pruebas unitarias con Karma y Jasmine.    |
 
 ## Estructura principal
 
@@ -87,6 +87,7 @@ Usa Interpolation cuando quieras mostrar texto:
 <h1>{{ titulo }}</h1>
 <p>{{ usuario.nombre }}</p>
 ```
+
 Usa Property Binding cuando quieras controlar propiedades de elementos:
 
 ```powershell
@@ -97,9 +98,36 @@ HTML
 <button [disabled]="isDisabled">
 ```
 
-En el TS class 
+En el TS class
 
 ```powershell
 // si no le agrego un value, el default es 'undifined'
 avatar = input();
 ```
+
+el signo de exclamacion indica que si o si abrá un valor , el de ? indica que puede no haberlo asi que no lo muestre sies que no hay
+
+```powershell
+    return this.users.find((user) => user.id === this.selectedUserId)!;
+    
+    name = "selected?name"
+```
+
+formas de declarar objectos
+
+```powershell
+  type User = {
+  id: string;
+  avatar: string;
+  name: string;
+  }
+  
+  interface User {
+  id: string;
+  avatar: string;
+  name: string;
+  }
+```
+
+
+
