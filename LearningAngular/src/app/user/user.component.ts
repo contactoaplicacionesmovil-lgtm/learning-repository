@@ -10,24 +10,19 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
   styleUrl: './user.component.css'
 })
 export class UserComponent {
-  //SIGNAL APPROUCH
-  //wich kind of value will eventually be received
-  //avatar = input.required<string>();
-  //name = input.required<string>();
-  // imagePath = computed(() => {
-  //   return 'assets/users/' + this.avatar();
-  // });
-  @Input({required: true}) id!: string;
-  @Input({required: true}) avatar!: string;
-  @Input({required: true}) name!: string;
-  @Output() select= new EventEmitter();
+  @Input({required: true}) user!: {
+    id: string;
+    avatar: string;
+    name: string;
+  };
+  @Output() select = new EventEmitter();
 
-  get imagePath(){
-    return 'assets/users/' + this.avatar;
+  get imagePath() {
+    return 'assets/users/' + this.user.avatar;
   }
 
   onSelectUser() {
-    this.select.emit(this.id);
+    this.select.emit(this.user.id);
   }
 
 }
