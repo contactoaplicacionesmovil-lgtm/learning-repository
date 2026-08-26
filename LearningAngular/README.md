@@ -129,5 +129,13 @@ formas de declarar objectos
   }
 ```
 
-
-
+IMPRIMIR LIST DATA
+```powershell
+  @for (obj of users; track obj.id) {
+    <li>
+      <app-user [user]="obj"
+      (select)="onSelectUser($event)"
+      />
+    </li>
+  }
+```
