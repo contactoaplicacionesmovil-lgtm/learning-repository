@@ -1,0 +1,7 @@
+# Configuración local del IDE para la carpeta contenedora (no es un proyecto Android)
+/Learning Android/.idea/
+/Learning Android/.gradle/
+/Learning Android/.kotlin/
+
+# Artefactos de build locales
+/Learning Android/build/
