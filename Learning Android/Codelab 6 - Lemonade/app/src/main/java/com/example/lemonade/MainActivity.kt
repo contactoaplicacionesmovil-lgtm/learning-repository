@@ -52,7 +52,8 @@ class MainActivity : ComponentActivity() {
 fun LimonadeStepsScreen(modifier: Modifier = Modifier) {
 
     var currentStep by remember { mutableStateOf(1) }
-    var squeezeLemon by remember { mutableStateOf(2) }
+    var squeezeCount by remember { mutableStateOf(0) }
+    var requiredSqueezes by remember { mutableStateOf(2) }
 
     val currentImage = when (currentStep) {
         1 -> R.drawable.lemon_tree
@@ -83,11 +84,24 @@ fun LimonadeStepsScreen(modifier: Modifier = Modifier) {
     ) {
         Button(
             onClick = {
-                currentStep = when (currentStep) {
-                    1 -> 2
-                    2 -> 3
-                    3 -> 4
-                    else -> 1
+                when (currentStep) {
+                    1 -> {
+                        requiredSqueezes = (2..4).random()
+                        squeezeCount = 0
+                        currentStep = 2
+                    }
+                    2 -> {
+                        squeezeCount++
+                        if (squeezeCount >= requiredSqueezes) {
+                            currentStep = 3
+                        }
+                    }
+                    3 -> {
+                        currentStep = 4
+                    }
+                    4 -> {
+                        currentStep = 1
+                    }
                 }
             },
             shape = RoundedCornerShape(24.dp),
