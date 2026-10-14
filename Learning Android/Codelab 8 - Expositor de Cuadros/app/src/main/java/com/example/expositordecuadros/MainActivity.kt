@@ -1,11 +1,13 @@
 package com.example.expositordecuadros
 
-import android.R.attr.rotationY
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -24,12 +26,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,14 +44,14 @@ import kotlin.math.abs
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        enableEdgeToEdge() // 👈 Volvemos al enableEdgeToEdge por defecto
         setContent {
             ExpositorDeCuadrosTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    ExpositorCubo3D(
-
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                Scaffold(
+                    containerColor = Color.White,
+                    modifier = Modifier.fillMaxSize()
+                ) { _ ->
+                    ExpositorCubo3D()
                 }
             }
         }
@@ -54,104 +59,107 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun ExpositorCubo3D( modifier: Modifier = Modifier) {
+fun ExpositorCubo3D(modifier: Modifier = Modifier) {
     val listaCuadros = listOf(
-        Cuadro("La Noche Estrellada", "Vincent van Gogh", "1889", Color(0xFF1E3A8A)),
-        Cuadro("La Monalisa", "Leonardo da Vinci", "1503", Color(0xFF3F2E1E)),
-        Cuadro("El Grito", "Edvard Munch", "1893", Color(0xFF7C2D12)),
-        Cuadro("La Joven de la Perla", "Johannes Vermeer", "1665", Color(0xFF1E293B)),
-        Cuadro("La Persistencia de la Memoria", "Salvador Dalí", "1931", Color(0xFF78350F))
+        Cuadro("La Noche Estrellada", "Vincent van Gogh", "@vangogh_art"),
+        Cuadro("La Monalisa", "Leonardo da Vinci", "@davinci_codes"),
+        Cuadro("El Grito", "Edvard Munch", "@munch_expression"),
+        Cuadro("La Joven de la Perla", "Johannes Vermeer", "@vermeer_gallery"),
+        Cuadro("La Persistencia de la Memoria", "Salvador Dalí", "@dali_surreal")
     )
-
     val pagerState = rememberPagerState(pageCount = { listaCuadros.size })
 
     HorizontalPager(
         state = pagerState,
-        modifier = Modifier.fillMaxWidth()
-    ) { page -> // Variable 'page': El índice de la tarjeta actual que Compose está dibujando
-
-        val cuadro = listaCuadros[page] // Extraemos la obra de arte según el índice 'page'
+        modifier = modifier.fillMaxSize()
+    ) { page ->
+        val cuadro = listaCuadros[page]
 
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp)
+                .fillMaxSize()
                 .graphicsLayer {
-                    // Variable 3: Distancia decimal de la tarjeta respecto al centro de la pantalla
                     val pageOffset =
-                        (page - pagerState.currentPage) - pagerState.currentPageOffsetFraction//*************
+                        (page - pagerState.currentPage) - pagerState.currentPageOffsetFraction
 
-                    // Variable 4: transformOrigin (El eje/borde sobre el que gira el cubo)
                     transformOrigin = if (pageOffset < 0) {
-                        TransformOrigin(
-                            1f,
-                            0.5f
-                        ) // Borde derecho si el cuadro va saliendo hacia la izquierda
+                        TransformOrigin(1f, 0.5f)
                     } else {
-                        TransformOrigin(
-                            0f,
-                            0.5f
-                        ) // Borde izquierdo si el cuadro viene entrando desde la derecha
+                        TransformOrigin(0f, 0.5f)
                     }
 
-                    // Variable 5: rotationY (Ángulo de inclinación 3D)
                     rotationY = pageOffset * 90f
-
-                    // Variable 6: cameraDistance (Distancia de la lente de la cámara virtual)
                     cameraDistance = 16 * density
                 },
             contentAlignment = Alignment.Center
         ) {
             Card(
-                shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.Black),//*************
-                elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
+                shape = RectangleShape, // 👈 Sin colors personalizados, usa los defaults de Card
+                colors = CardDefaults.cardColors(containerColor = Color.White), // 👈 AGREGA ESTA LÍNEA AQUÍ
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(3f / 4f)
+                    .fillMaxSize()
                     .drawWithContent {
-                        drawContent() // Dibuja primero el lienzo original//*************
+                        drawContent()
 
-                        // Variable 7: alphaShadow (Intensidad de la penumbra al girar)
                         val pageOffset =
                             (page - pagerState.currentPage) - pagerState.currentPageOffsetFraction
                         val alphaShadow = (abs(pageOffset) * 0.6f).coerceIn(0f, 0.7f)
 
-                        // Dibuja el sombreado dinámico sobre la cara del cubo
                         drawRect(color = Color.Black.copy(alpha = alphaShadow))
                     }
             ) {
-                // ⬇️ AGREGA ESTE BLOQUE AQUÍ ⬇️
-                Box(
+                Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(cuadro.colorFondo),
-                    contentAlignment = Alignment.BottomStart
+                        .padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
                 ) {
-                    // Placa del museo en la parte inferior del cuadro
-                    Box(
+                    // 1. Título (Sin parámetro color)
+                    Text(
+                        text = cuadro.titulo,
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = FontFamily.Serif,
+                        textAlign = TextAlign.Center
+                    )
+
+                    Spacer(modifier = Modifier.height(28.dp))
+
+                    // 2. Marco del Cuadro (Sin border ni colors personalizados)
+                    Card(
+                        shape = RoundedCornerShape(16.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .background(Color.Black.copy(alpha = 0.8f))
-                            .padding(16.dp)
+                            .fillMaxWidth(0.75f)
+                            .aspectRatio(214f / 236f)
                     ) {
-                        Column {
-                            Text(
-                                text = cuadro.titulo,
-                                color = Color(0xFFF5E6C8),
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold,
-                                fontFamily = FontFamily.Serif
-                            )
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text(
-                                text = "${cuadro.autor} (${cuadro.anio})",
-                                color = Color.LightGray,
-                                fontSize = 14.sp,
-                                fontFamily = FontFamily.Serif
-                            )
-                        }
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color(0xFFFFD1DC))
+                        )
                     }
+
+                    Spacer(modifier = Modifier.height(28.dp))
+
+                    // 3. Autor (Sin parámetro color)
+                    Text(
+                        text = cuadro.autor,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Medium,
+                        fontFamily = FontFamily.Serif,
+                        textAlign = TextAlign.Center
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // 4. Red Social (Sin parámetro color)
+                    Text(
+                        text = cuadro.redSocial,
+                        fontSize = 24.sp,
+                        textAlign = TextAlign.Center
+                    )
                 }
             }
         }
