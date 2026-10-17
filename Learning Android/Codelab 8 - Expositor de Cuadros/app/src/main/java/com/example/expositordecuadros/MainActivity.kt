@@ -2,15 +2,16 @@ package com.example.expositordecuadros
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,6 +33,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -44,7 +47,7 @@ import kotlin.math.abs
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge() // 👈 Volvemos al enableEdgeToEdge por defecto
+        enableEdgeToEdge()
         setContent {
             ExpositorDeCuadrosTheme {
                 Scaffold(
@@ -61,19 +64,33 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun ExpositorCubo3D(modifier: Modifier = Modifier) {
     val listaCuadros = listOf(
-        Cuadro("La Noche Estrellada", "Vincent van Gogh", "@vangogh_art"),
-        Cuadro("La Monalisa", "Leonardo da Vinci", "@davinci_codes"),
-        Cuadro("El Grito", "Edvard Munch", "@munch_expression"),
-        Cuadro("La Joven de la Perla", "Johannes Vermeer", "@vermeer_gallery"),
-        Cuadro("La Persistencia de la Memoria", "Salvador Dalí", "@dali_surreal")
+        Cuadro("Gengar\nHappy Halloween", "Oliver Hamlin", "@oliver_hamlin", R.drawable.gengar),
+        Cuadro("Psyduck calabaza", "Drawzee", "@drazee_", R.drawable.psyduck),
+        Cuadro(
+            "Mareep", "Dammit.png", "@dammit.png", R.drawable.jirafita
+        ),
+        Cuadro(
+            "Tigresa del Oriente",
+            "IA de zombies",
+            "@tigresadelorienteclips",
+            R.drawable.tigresa
+        ),
+        Cuadro("Blaziken", "Oliver Hamlin", "@oliver_hamlin", R.drawable.kombusquen),
+        Cuadro("Psyduck con sueño", "Porygun", "@porygun", R.drawable.psyduck_sleepy),
+
+        )
+    val pageCountVirtual = Int.MAX_VALUE
+    val initialPage = (pageCountVirtual / 2) - ((pageCountVirtual / 2) % listaCuadros.size)
+    val pagerState = rememberPagerState(
+        initialPage = initialPage,
+        pageCount = { pageCountVirtual }
     )
-    val pagerState = rememberPagerState(pageCount = { listaCuadros.size })
 
     HorizontalPager(
         state = pagerState,
         modifier = modifier.fillMaxSize()
     ) { page ->
-        val cuadro = listaCuadros[page]
+        val cuadro = listaCuadros[page % listaCuadros.size]
 
         Box(
             modifier = Modifier
@@ -94,19 +111,9 @@ fun ExpositorCubo3D(modifier: Modifier = Modifier) {
             contentAlignment = Alignment.Center
         ) {
             Card(
-                shape = RectangleShape, // 👈 Sin colors personalizados, usa los defaults de Card
-                colors = CardDefaults.cardColors(containerColor = Color.White), // 👈 AGREGA ESTA LÍNEA AQUÍ
-                modifier = Modifier
-                    .fillMaxSize()
-                    .drawWithContent {
-                        drawContent()
-
-                        val pageOffset =
-                            (page - pagerState.currentPage) - pagerState.currentPageOffsetFraction
-                        val alphaShadow = (abs(pageOffset) * 0.6f).coerceIn(0f, 0.7f)
-
-                        drawRect(color = Color.Black.copy(alpha = alphaShadow))
-                    }
+                shape = RectangleShape,
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                modifier = Modifier.fillMaxSize()
             ) {
                 Column(
                     modifier = Modifier
@@ -115,18 +122,17 @@ fun ExpositorCubo3D(modifier: Modifier = Modifier) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    // 1. Título (Sin parámetro color)
                     Text(
                         text = cuadro.titulo,
                         fontSize = 28.sp,
                         fontWeight = FontWeight.Bold,
                         fontFamily = FontFamily.Serif,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        lineHeight = 32.sp
                     )
 
                     Spacer(modifier = Modifier.height(28.dp))
 
-                    // 2. Marco del Cuadro (Sin border ni colors personalizados)
                     Card(
                         shape = RoundedCornerShape(16.dp),
                         elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
@@ -134,16 +140,16 @@ fun ExpositorCubo3D(modifier: Modifier = Modifier) {
                             .fillMaxWidth(0.75f)
                             .aspectRatio(214f / 236f)
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(Color(0xFFFFD1DC))
+                        Image(
+                            painter = painterResource(id = cuadro.imagenRes),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
                         )
                     }
 
                     Spacer(modifier = Modifier.height(28.dp))
 
-                    // 3. Autor (Sin parámetro color)
                     Text(
                         text = cuadro.autor,
                         fontSize = 24.sp,
@@ -154,7 +160,6 @@ fun ExpositorCubo3D(modifier: Modifier = Modifier) {
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    // 4. Red Social (Sin parámetro color)
                     Text(
                         text = cuadro.redSocial,
                         fontSize = 24.sp,
