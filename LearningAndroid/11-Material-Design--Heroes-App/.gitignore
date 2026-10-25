@@ -1,15 +1,11 @@
+# Configuración local del IDE (no se sube al repo)
+.idea/
 *.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+
+# Cachés y artefactos de build
+.gradle/
+.kotlin/
+build/
+captures/
 local.properties
+.DS_Store
