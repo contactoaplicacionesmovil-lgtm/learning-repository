@@ -42,7 +42,7 @@ class HomeViewModel : ViewModel() {
             ItemDinamico(8, "Card Imagen Izquierda", "Ocupa todo el ancho.", R.drawable._039, 4),
 
             // Tipo 3: Tarjeta Premium
-            ItemDinamico(9, "Card Grande", "Imagen de fondo.", R.drawable._044, 3)
+            ItemDinamico(9, "Card Grande", "Imagen de fondo.", R.drawable._006, 3)
         )
 
         _uiState.value = HomeUiState(
