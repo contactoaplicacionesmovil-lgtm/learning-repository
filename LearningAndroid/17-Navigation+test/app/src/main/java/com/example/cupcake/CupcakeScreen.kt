@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -49,6 +50,7 @@ import com.example.cupcake.ui.OrderSummaryScreen
 import com.example.cupcake.ui.OrderViewModel
 import com.example.cupcake.ui.SelectOptionScreen
 import com.example.cupcake.ui.StartOrderScreen
+import com.example.cupcake.ui.theme.CupcakeTheme
 
 
 enum class CupcakeScreen(@StringRes val title: Int) {
@@ -203,3 +205,14 @@ private fun cancelOrderAndNavigateToStart(
     viewModel.resetOrder()
     navController.popBackStack(CupcakeScreen.Start.name, inclusive = false)
 }
+
+@Preview(showBackground = true)
+@Composable
+fun CupcakeAppPreview() {
+    CupcakeTheme {
+        CupcakeApp()
+    }
+}
+
+
+
