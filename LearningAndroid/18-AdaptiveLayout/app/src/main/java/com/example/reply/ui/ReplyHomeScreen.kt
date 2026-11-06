@@ -15,6 +15,7 @@
  */
 package com.example.reply.ui
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -59,11 +60,13 @@ import com.example.reply.data.MailboxType
 import com.example.reply.data.local.LocalAccountsDataProvider
 import com.example.reply.data.local.LocalEmailsDataProvider
 import com.example.reply.ui.theme.ReplyTheme
+import com.example.reply.ui.utils.ReplyContentType
 import com.example.reply.ui.utils.ReplyNavigationType
 
 @Composable
 fun ReplyHomeScreen(
     navigationType: ReplyNavigationType,
+    contentType: ReplyContentType,
     replyUiState: ReplyUiState,
     onTabPressed: (MailboxType) -> Unit,
     onEmailCardPressed: (Email) -> Unit,
@@ -92,8 +95,11 @@ fun ReplyHomeScreen(
             text = stringResource(id = R.string.tab_spam)
         )
     )
+    Log.i("navigationType", "$navigationType")
+    Log.i("contentType", "$contentType")
 
-    if (navigationType == ReplyNavigationType.PERMANENT_NAV_DRAWER && replyUiState.isShowingHomepage) {
+    if (navigationType == ReplyNavigationType.PERMANENT_NAV_DRAWER) {
+        val navigationDrawerContenDescrip = stringResource(R.string.navigation_drawer)
         PermanentNavigationDrawer(
             drawerContent = {
                 PermanentDrawerSheet(Modifier.width(dimensionResource(R.dimen.drawer_width))) {
@@ -109,21 +115,45 @@ fun ReplyHomeScreen(
 
                     )
                 }
-            }
+            },
+            modifier = Modifier.testTag(navigationDrawerContenDescrip)
         ) {
-            ReplyAppContent(
-                navigationType = navigationType,
-                replyUiState = replyUiState,
-                onTabPressed = onTabPressed,
-                onEmailCardPressed = onEmailCardPressed,
-                navigationItemContentList = navigationItemContentList,
+            Column(
                 modifier = modifier
-            )
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.inverseOnSurface)
+            ) {
+                if (contentType == ReplyContentType.LIST_AND_DETAIL) {
+                    ReplyListAndDetailContent(
+                        replyUiState = replyUiState,
+                        onEmailCardPressed = onEmailCardPressed,
+                        modifier = Modifier.weight(1f)
+                    )
+                } else {
+                    ReplyListOnlyContent(
+                        replyUiState = replyUiState,
+                        onEmailCardPressed = onEmailCardPressed,
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(
+                                horizontal = dimensionResource(R.dimen.email_list_only_horizontal_padding)
+                            )
+                    )
+                }
+                AnimatedVisibility(visible = navigationType == ReplyNavigationType.BOTTOM_NAV) {
+                    ReplyBottomNavigationBar(
+                        currentTab = replyUiState.currentMailbox,
+                        onTabPressed = onTabPressed,
+                        navigationItemContentList = navigationItemContentList,
+                    )
+                }
+            }
         }
     } else {
         if (replyUiState.isShowingHomepage) {
             ReplyAppContent(
                 navigationType = navigationType,
+                contentType = contentType,
                 replyUiState = replyUiState,
                 onTabPressed = onTabPressed,
                 onEmailCardPressed = onEmailCardPressed,
@@ -134,16 +164,19 @@ fun ReplyHomeScreen(
             ReplyDetailsScreen(
                 replyUiState = replyUiState,
                 onBackPressed = onDetailScreenBackPressed,
-                modifier = modifier
+                modifier = modifier,
+                isFullScreen = true
             )
         }
     }
+
 
 }
 
 @Composable
 private fun ReplyAppContent(
     navigationType: ReplyNavigationType,
+    contentType: ReplyContentType,
     replyUiState: ReplyUiState,
     onTabPressed: ((MailboxType) -> Unit),
     onEmailCardPressed: (Email) -> Unit,
@@ -154,10 +187,12 @@ private fun ReplyAppContent(
     Row(modifier = modifier) {
 
         AnimatedVisibility(visible = navigationType == ReplyNavigationType.NAV_RAIL) {
+            val navigationRailContentDescrip = stringResource(R.string.navigation_rail)
             ReplyNavigationRail(
                 currentTab = replyUiState.currentMailbox,
                 onTabPressed = onTabPressed,
                 navigationItemContentList = navigationItemContentList,
+                modifier = Modifier.testTag(navigationRailContentDescrip)
             )
         }
 
@@ -177,12 +212,14 @@ private fun ReplyAppContent(
             )
 
             AnimatedVisibility(visible = navigationType == ReplyNavigationType.BOTTOM_NAV) {
+                val bottomNavContentDescrip = stringResource(R.string.navigation_bottom)
                 ReplyBottomNavigationBar(
                     currentTab = replyUiState.currentMailbox,
                     onTabPressed = onTabPressed,
                     navigationItemContentList = navigationItemContentList,
                     modifier = Modifier
                         .fillMaxWidth()
+                        .testTag(bottomNavContentDescrip)
                 )
             }
 
@@ -303,6 +340,7 @@ fun ReplyHomeScreenPreview() {
     ReplyTheme {
         ReplyHomeScreen(
             navigationType = ReplyNavigationType.BOTTOM_NAV,
+            contentType = ReplyContentType.LIST_ONLY,
             replyUiState = ReplyUiState(
                 mailboxes = LocalEmailsDataProvider.allEmails.groupBy { it.mailbox }
             ),
@@ -319,6 +357,7 @@ fun ReplyHomeScreenExpandedPreview() {
     ReplyTheme {
         ReplyHomeScreen(
             navigationType = ReplyNavigationType.BOTTOM_NAV,
+            contentType = ReplyContentType.LIST_ONLY,
             replyUiState = ReplyUiState(
                 mailboxes = LocalEmailsDataProvider.allEmails.groupBy { it.mailbox }
             ),
