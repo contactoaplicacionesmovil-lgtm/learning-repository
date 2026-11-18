@@ -25,7 +25,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             AmphibiansTheme {
 
-                val amphibiansViewModels: AmphibiansViewModel = viewModel()
+                val amphibiansViewModels: AmphibiansViewModel =
+                    viewModel(factory = AmphibiansViewModel.Factory)
 
                 AmphibiansApp(
                     amphibiansUiState = amphibiansViewModels.amphibiansUiState,
