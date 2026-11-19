@@ -166,3 +166,5 @@ C:\Users\gianj\Desktop\Proyectos\learning-repository\DesarrolloNet\FrogsApi\bin\
 C:\Users\gianj\Desktop\Proyectos\learning-repository\DesarrolloNet\FrogsApi\bin\Debug\net11.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
 C:\Users\gianj\Desktop\Proyectos\learning-repository\DesarrolloNet\FrogsApi\bin\Debug\net11.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
 C:\Users\gianj\Desktop\Proyectos\learning-repository\DesarrolloNet\FrogsApi\bin\Debug\net11.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\gianj\Desktop\Proyectos\learning-repository\DesarrolloNet\FrogsApi\bin\Debug\net11.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\gianj\Desktop\Proyectos\learning-repository\DesarrolloNet\FrogsApi\bin\Debug\net11.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll

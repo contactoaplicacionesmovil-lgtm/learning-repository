@@ -62,3 +62,24 @@ Content-Type: application/json
     "img_src": "https://developer.android.com/codelabs/basic-android-kotlin-compose-amphibians-app/img/tiger-salamander.png"
   }
 ]
+
+
+
+
+
+###
+# @name login
+POST {{FrogsApi_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@frogs.local",
+  "password": "clave123456"
+}
+
+
+###
+
+GET {{FrogsApi_HostAddress}}/api/frogs
+Authorization: Bearer {{login.response.body.$.accessToken}}
+Accept: application/json

@@ -1,9 +1,10 @@
 using FrogsApi.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace FrogsApi.Data;
 
-public class FrogsDbContext : DbContext
+public class FrogsDbContext : IdentityDbContext<ApplicationUser>
 {
     public FrogsDbContext(DbContextOptions<FrogsDbContext> options)
         : base(options)

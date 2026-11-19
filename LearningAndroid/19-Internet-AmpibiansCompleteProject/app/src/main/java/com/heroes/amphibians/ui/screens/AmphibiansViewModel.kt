@@ -21,9 +21,21 @@ class AmphibiansViewModel(private val repository: AmphibiansRepository) : ViewMo
     var amphibiansUiState: AmphibiansUiState by mutableStateOf(AmphibiansUiState.Loading)
         private set
 
+    var isAuthenticated by mutableStateOf(false)
+        private set
+
+    var isLoggingIn by mutableStateOf(false)
+        private set
+
+    var loginErrorMessage by mutableStateOf<String?>(null)
+        private set
+
+    private var accessToken: String? = null
+
+/*    LUEGO DEL LOGIN
     init {
         getAmphibians()
-    }
+    }*/
 
     /**
      * Obtiene la información de los anfibios desde la fuente de datos.
