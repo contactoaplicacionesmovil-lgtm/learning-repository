@@ -18,7 +18,8 @@ interface AppContainer {
  */
 class DefaultAppContainer : AppContainer {
 
-    private val baseUrl = "https://android-kotlin-fun-mars-server.appspot.com/"
+    //private val baseUrl = "https://android-kotlin-fun-mars-server.appspot.com/"
+    private val baseUrl = "http://10.0.2.2:5256/"
 
     // Configuración de Retrofit con el conversor de JSON de Kotlinx Serialization
     private val retrofit = Retrofit.Builder()

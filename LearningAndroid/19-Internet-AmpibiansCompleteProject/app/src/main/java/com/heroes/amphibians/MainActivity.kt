@@ -39,14 +39,14 @@ class MainActivity : ComponentActivity() {
 
 private val fakeAmphibians = listOf(
     Amphibian(
-        id = "1",
+        id = 1,
         name = "Great Basin Spadefoot",
         type = "Toad",
         description = "This toad spends most of its life underground due to the arid desert conditions in which it lives.",
         imgSrc = ""
     ),
     Amphibian(
-        id = "2",
+        id = 2,
         name = "Roraima Bush Toad",
         type = "Toad",
         description = "This toad is typically found in South America.",

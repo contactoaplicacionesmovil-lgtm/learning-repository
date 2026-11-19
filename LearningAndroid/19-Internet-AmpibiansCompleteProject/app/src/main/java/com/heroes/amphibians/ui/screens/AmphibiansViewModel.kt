@@ -1,5 +1,6 @@
 package com.heroes.amphibians.ui.screens
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -34,8 +35,10 @@ class AmphibiansViewModel(private val repository: AmphibiansRepository) : ViewMo
                 val listResult = repository.getAmphibians()
                 AmphibiansUiState.Success(listResult)
             } catch (e: IOException) {
+                Log.d("AmphibiansViewModel", "Error: ${e.message}")
                 AmphibiansUiState.Error
             } catch (e: Exception) {
+                Log.d("AmphibiansViewModel", "Error: ${e.message}")
                 AmphibiansUiState.Error
             }
         }
