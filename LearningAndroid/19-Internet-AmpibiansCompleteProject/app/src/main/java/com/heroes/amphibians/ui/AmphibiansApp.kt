@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.heroes.amphibians.model.Amphibian
 import com.heroes.amphibians.ui.screens.AmphibiansUiState
 import com.heroes.amphibians.ui.screens.HomeScreen
+import com.heroes.amphibians.ui.screens.LoginScreen
 import com.heroes.amphibians.ui.theme.AmphibiansTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -21,8 +22,14 @@ import com.heroes.amphibians.ui.theme.AmphibiansTheme
 fun AmphibiansApp(
     amphibiansUiState: AmphibiansUiState,
     retryAction: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isAuthenticated: Boolean,
+    isLoggingIn: Boolean,
+    loginErrorMessage: String?,
+    loginAction: (String, String) -> Unit,
 ) {
+
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
@@ -40,12 +47,23 @@ fun AmphibiansApp(
             )
         }
     ) { innerPadding ->
-        HomeScreen(
-            amphibiansUiState = amphibiansUiState,
-            retryAction = retryAction,
-            contentPadding = innerPadding,
-            modifier = Modifier.fillMaxSize()
-        )
+
+
+        if (isAuthenticated) {
+            HomeScreen(
+                amphibiansUiState = amphibiansUiState,
+                retryAction = retryAction,
+                contentPadding = innerPadding,
+                modifier = Modifier.fillMaxSize()
+            )
+        } else {
+            LoginScreen(
+                onLogin = loginAction,
+                isLoading = isLoggingIn,
+                errorMessage = loginErrorMessage,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
 
     }
 }

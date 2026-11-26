@@ -1,0 +1,75 @@
+@baseUrl = https://localhost:7113
+
+### Crear género
+# @name crearGenero
+POST {{baseUrl}}/api/generos
+Content-Type: application/json
+
+{
+  "nombre": "Comedia"
+}
+
+### Consultar todos los géneros
+GET {{baseUrl}}/api/generos
+Accept: application/json
+
+### Consultar el género recién creado
+#GET {{baseUrl}}/api/generos/{{crearGenero.response.body.$.id}}
+GET {{baseUrl}}/api/generos/1
+Accept: application/json
+
+### PRUEBA GENERO 01: Intentar crear el mismo género; debe responder 409
+POST {{baseUrl}}/api/generos
+Content-Type: application/json
+
+{
+  "nombre": "Terror"
+}
+
+### Crear un libro usando el género creado
+# @name crearLibro
+POST {{baseUrl}}/api/libros
+Content-Type: application/json
+
+{
+  "titulo": "Dracula",
+  "autor": "Antoine de Dracula",
+  "generoId": 1
+}
+
+### Consultar todos los libros
+GET {{baseUrl}}/api/libros
+Accept: application/json
+
+### Consultar el libro recién creado
+GET {{baseUrl}}/api/libros/1
+Accept: application/json
+
+### Actualizar el libro
+PUT {{baseUrl}}/api/libros/1
+Content-Type: application/json
+
+{
+  "titulo": "El principito Comedia",
+  "autor": "Antoine de Saint-Exupery",
+  "generoId": 2
+}
+
+### PRUEBA LIBRO 01: Obtener un libro inexistente; debe responder 404
+GET {{baseUrl}}/api/libros/2147483647
+
+### PRUEBA LIBRO 02:Probar un género inexistente al crear un libro; debe responder 400
+POST {{baseUrl}}/api/libros
+Content-Type: application/json
+
+{
+  "titulo": "Libro sin género válido",
+  "autor": "Autor de prueba",
+  "generoId": 2147483647
+}
+
+### Eliminar el libro creado; debe responder 204
+DELETE {{baseUrl}}/api/libros/1
+
+### PRUEBA LIBRO 04: Intentar eliminarlo otra vez; debe responder 404
+DELETE {{baseUrl}}/api/libros/1

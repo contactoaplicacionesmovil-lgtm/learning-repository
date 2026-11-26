@@ -15,6 +15,7 @@ import com.heroes.amphibians.data.AmphibiansRepository
 import com.heroes.amphibians.model.Amphibian
 import kotlinx.coroutines.launch
 import okio.IOException
+import retrofit2.HttpException
 
 class AmphibiansViewModel(private val repository: AmphibiansRepository) : ViewModel() {
 
@@ -30,29 +31,48 @@ class AmphibiansViewModel(private val repository: AmphibiansRepository) : ViewMo
     var loginErrorMessage by mutableStateOf<String?>(null)
         private set
 
-    private var accessToken: String? = null
 
-/*    LUEGO DEL LOGIN
-    init {
-        getAmphibians()
-    }*/
+    /*    LUEGO DEL LOGIN
+        init {
+            getAmphibians()
+        }*/
 
-    /**
-     * Obtiene la información de los anfibios desde la fuente de datos.
-     */
-    fun getAmphibians() {
+    fun login(email: String, password: String) {
         viewModelScope.launch {
-            amphibiansUiState = AmphibiansUiState.Loading
-            amphibiansUiState = try {
-                val listResult = repository.getAmphibians()
-                AmphibiansUiState.Success(listResult)
-            } catch (e: IOException) {
-                Log.d("AmphibiansViewModel", "Error: ${e.message}")
-                AmphibiansUiState.Error
+            isLoggingIn = true
+            loginErrorMessage = null
+
+            try {
+                repository.login(email, password)
+                isAuthenticated = true
+                getAmphibians()
+            } catch (e: HttpException) {
+                loginErrorMessage =
+                    if (e.code() == 401) "Correo o contraseña incorrectos."
+                    else "Error del servidor: ${e.code()}."
             } catch (e: Exception) {
-                Log.d("AmphibiansViewModel", "Error: ${e.message}")
-                AmphibiansUiState.Error
+                loginErrorMessage = "No se pudo conectar con el servicio."
+            } finally {
+                isLoggingIn = false
             }
+        }
+    }
+
+    fun getAmphibians() = viewModelScope.launch {
+        amphibiansUiState = AmphibiansUiState.Loading
+
+        try {
+            amphibiansUiState =
+                AmphibiansUiState.Success(repository.getAmphibians())
+        } catch (e: HttpException) {
+            if (e.code() == 401) {
+                repository.logout()
+                isAuthenticated = false
+                loginErrorMessage = "La sesión venció. Inicia sesión nuevamente."
+            }
+            amphibiansUiState = AmphibiansUiState.Error
+        } catch (e: Exception) {
+            amphibiansUiState = AmphibiansUiState.Error
         }
     }
 

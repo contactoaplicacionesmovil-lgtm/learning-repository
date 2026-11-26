@@ -30,7 +30,11 @@ class MainActivity : ComponentActivity() {
 
                 AmphibiansApp(
                     amphibiansUiState = amphibiansViewModels.amphibiansUiState,
-                    retryAction = amphibiansViewModels::getAmphibians
+                    retryAction = amphibiansViewModels::getAmphibians,
+                    isAuthenticated = amphibiansViewModels.isAuthenticated,
+                    isLoggingIn = amphibiansViewModels.isLoggingIn,
+                    loginErrorMessage = amphibiansViewModels.loginErrorMessage,
+                    loginAction = amphibiansViewModels::login
                 )
             }
         }
@@ -60,7 +64,11 @@ fun AmphibiansAppPreview() {
     AmphibiansTheme {
         AmphibiansApp(
             amphibiansUiState = AmphibiansUiState.Success(fakeAmphibians),
-            retryAction = {}
+            retryAction = {},
+            isAuthenticated = false,
+            isLoggingIn = false,
+            loginErrorMessage = "",
+            loginAction = { _, _ -> }
         )
     }
 }

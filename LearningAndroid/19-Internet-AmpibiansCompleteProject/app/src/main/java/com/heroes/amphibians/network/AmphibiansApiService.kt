@@ -12,7 +12,6 @@ interface AmphibiansApiService {
 
     @GET("api/frogs")
     suspend fun getAmphibians(
-        @Header("Authorization") authorization: String
     ): List<Amphibian>
 
     @POST("api/auth/login")

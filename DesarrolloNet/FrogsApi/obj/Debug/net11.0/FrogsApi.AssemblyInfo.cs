@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FrogsApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9bd2b347d73859bf6dc03dc06cc06336a856932f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+036cb080ba4d9a8c7356d645523b5e752170d7f0")]
 [assembly: System.Reflection.AssemblyProductAttribute("FrogsApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FrogsApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

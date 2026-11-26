@@ -1,8 +1,11 @@
 package com.heroes.amphibians.data
 
 import com.heroes.amphibians.network.AmphibiansApiService
+import com.heroes.amphibians.network.AuthInterceptor
+import com.heroes.amphibians.network.TokenManager
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 
@@ -11,6 +14,7 @@ import retrofit2.converter.kotlinx.serialization.asConverterFactory
  */
 interface AppContainer {
     val amphibiansRepository: AmphibiansRepository
+    val tokenManager: TokenManager
 }
 
 /**
@@ -20,11 +24,22 @@ class DefaultAppContainer : AppContainer {
 
     //private val baseUrl = "https://android-kotlin-fun-mars-server.appspot.com/"
     private val baseUrl = "http://10.0.2.2:5256/"
+    override val tokenManager: TokenManager by lazy {
+        TokenManager()
+    }
+
+    // Configuración de OkHttpClient incorporando nuestro AuthInterceptor
+    private val okHttpClient: OkHttpClient by lazy {
+        OkHttpClient.Builder()
+            .addInterceptor(AuthInterceptor(tokenManager))
+            .build()
+    }
 
     // Configuración de Retrofit con el conversor de JSON de Kotlinx Serialization
     private val retrofit = Retrofit.Builder()
         .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
         .baseUrl(baseUrl)
+        .client(okHttpClient) // <-- Vinculamos OkHttpClient a Retrofit
         .build()
 
     // Creación perezosa (lazy) del servicio de Retrofit.
@@ -35,6 +50,6 @@ class DefaultAppContainer : AppContainer {
 
     // Inicialización de nuestro repositorio.
     override val amphibiansRepository: AmphibiansRepository by lazy {
-        NetworkAmphibiansRepository(retrofitService)
+        NetworkAmphibiansRepository(retrofitService, tokenManager)
     }
 }
